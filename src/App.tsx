@@ -1,25 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { createGlobalStyle, ThemeProvider } from "styled-components";
+import { Main } from "./components";
+
+const GlobalStyle = createGlobalStyle`
+  body {
+    margin: 0;
+    font-family: 'Dosis', 'Roboto', sans-serif;
+    color: white;
+  }
+`;
+
+const theme = {
+  main: "#123f68",
+  secondary: "#12cdb7",
+};
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <React.Fragment>
+      <ThemeProvider theme={theme}>
+        <GlobalStyle />
+        <Main />
+      </ThemeProvider>
+    </React.Fragment>
   );
 }
 
