@@ -7,18 +7,18 @@ import {
   IoLogoLinkedin,
 } from "react-icons/io";
 import styled from "styled-components";
-import { useChain, useSpring, useSpringRef } from "@react-spring/core";
+import { useSpring } from "@react-spring/core";
 import { animated } from "@react-spring/web";
 
 const IconContainer = styled(animated.div)`
-  padding: 16px;
+  padding: ${(props) => props.theme.spacing(2)};
   font-size: 4rem;
   display: flex;
   justify-content: center;
 `;
 
 const TextContainer = styled(animated.div)`
-  padding: 16px;
+  padding: ${(props) => props.theme.spacing(2)};
 `;
 
 const AboutIconLink = styled.a`
@@ -31,30 +31,27 @@ const AboutIconLink = styled.a`
 
 interface AboutProps {
   anchorRef: React.RefObject<HTMLHeadingElement>;
+  anchorSize: DOMRectReadOnly | undefined;
   windowSize: DOMRectReadOnly | undefined;
 }
 
-function About({ anchorRef, windowSize }: AboutProps) {
-  const overlayRef = useSpringRef();
+function About({ anchorRef, windowSize, anchorSize }: AboutProps) {
   const [open, setOpen] = useState<boolean>(false);
 
   const handleOverlayClick = () => {
     setOpen((open) => !open);
   };
 
-  const contentRef = useSpringRef();
   const contentStyles = useSpring({
-    ref: contentRef,
     opacity: open ? 1 : 0,
+    delay: 300,
   });
-
-  useChain([overlayRef, contentRef], [0, 0.3]);
 
   return (
     <OverlayButton
       anchorRef={anchorRef}
+      anchorSize={anchorSize}
       windowSize={windowSize}
-      overlayRef={open ? overlayRef : undefined}
       name="about"
       open={open}
       onClick={handleOverlayClick}
@@ -81,7 +78,11 @@ function About({ anchorRef, windowSize }: AboutProps) {
         >
           <IoLogoLinkedin />
         </AboutIconLink>
-        <AboutIconLink href="logo512.png" target="_blank" rel="noreferrer">
+        <AboutIconLink
+          href="/assets/resume.pdf"
+          target="_blank"
+          rel="noreferrer"
+        >
           <IoIosDocument />
         </AboutIconLink>
       </IconContainer>

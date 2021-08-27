@@ -9,12 +9,11 @@ interface OverlayStyled {
 
 const Overlay = styled(animated.div)<OverlayStyled>`
   cursor: pointer;
-  overflow: hidden;
+  overflow: ${(props) => (props.open ? "auto" : "hidden")};
   position: absolute;
   background-color: ${(props) => props.theme.main};
   z-index: ${(props) => (props.open ? 1 : 0)};
   display: flex;
-  font-size: 1.5rem;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
@@ -39,6 +38,7 @@ const CloseButton = styled.div`
 interface OverlayProps {
   anchorRef: React.RefObject<HTMLHeadingElement>;
   windowSize: DOMRectReadOnly | undefined;
+  anchorSize: DOMRectReadOnly | undefined;
   children?: React.ReactNode;
   offsetX?: number;
   offsetY?: number;
@@ -50,6 +50,7 @@ interface OverlayProps {
 
 function OverlayButton({
   anchorRef,
+  anchorSize,
   windowSize,
   children,
   offsetX,
@@ -60,6 +61,7 @@ function OverlayButton({
   onClick,
 }: OverlayProps) {
   const theme = useContext(ThemeContext);
+  const overlayOffset = 40;
   const [buttonsAnchor, setButtonsAnchor] = useState<{ x: Number; y: Number }>({
     x: 0,
     y: 0,
@@ -70,7 +72,7 @@ function OverlayButton({
     const x = rect ? rect.x + (offsetX || 0) : 0;
     const y = rect ? rect.y + rect.height + 20 + (offsetY || 0) : 0;
     setButtonsAnchor({ x, y });
-  }, [anchorRef, offsetX, offsetY, windowSize]);
+  }, [anchorRef, offsetX, offsetY, windowSize, anchorSize]);
 
   const styles = useSpring({
     ref: overlayRef,
@@ -81,11 +83,11 @@ function OverlayButton({
       color: "#fff",
     },
     to: {
-      width: open ? windowSize?.width : 100,
-      height: open ? windowSize?.height : 50,
+      width: open ? Number(windowSize?.width) - overlayOffset : 100,
+      height: open ? Number(windowSize?.height) - overlayOffset : 50,
       background: open ? "white" : theme.secondary,
-      top: open ? 0 : buttonsAnchor.y,
-      left: open ? 0 : buttonsAnchor.x,
+      top: open ? overlayOffset / 2 : buttonsAnchor.y,
+      left: open ? overlayOffset / 2 : buttonsAnchor.x,
       cursor: open ? "auto" : "pointer",
       color: open ? "#000" : "#fff",
     },

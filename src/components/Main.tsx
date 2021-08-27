@@ -18,17 +18,16 @@ const Content = styled.div`
   align-items: center;
   justify-content: space-evenly;
   flex-wrap: wrap-reverse;
-  box-sizing: border-box;
   width: 100vw;
   height: 100vh;
-  padding: 16px;
+  padding: ${(props) => props.theme.spacing(2)};
 `;
 
 const Name = styled.h1`
   color: white;
   font-size: 3rem;
-  margin-top: 8px;
-  margin-bottom: 8px;
+  margin-top: ${(props) => props.theme.spacing(1)};
+  margin-bottom: ${(props) => props.theme.spacing(1)};
 `;
 
 const Greetings = styled(animated.div)`
@@ -59,6 +58,7 @@ function Main() {
   const webDevRef = useRef<HTMLHeadingElement>(null);
   const mainRef = useRef<HTMLDivElement>(null);
   const windowSize = useSize(mainRef);
+  const anchorSize = useSize(webDevRef);
 
   const language = ["react", "javascript", "php", "mysql"];
   const [counter, setCounter] = useState(0);
@@ -101,9 +101,21 @@ function Main() {
           </Greetings>
         </div>
       </Content>
-      <About anchorRef={webDevRef} windowSize={windowSize} />
-      <Skills anchorRef={webDevRef} windowSize={windowSize} />
-      <Projects anchorRef={webDevRef} windowSize={windowSize} />
+      <About
+        anchorRef={webDevRef}
+        windowSize={windowSize}
+        anchorSize={anchorSize}
+      />
+      <Skills
+        anchorRef={webDevRef}
+        windowSize={windowSize}
+        anchorSize={anchorSize}
+      />
+      <Projects
+        anchorRef={webDevRef}
+        windowSize={windowSize}
+        anchorSize={anchorSize}
+      />
     </MainDiv>
   );
 }

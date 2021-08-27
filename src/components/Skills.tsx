@@ -12,7 +12,7 @@ import {
   SiRedux,
 } from "react-icons/si";
 import styled from "styled-components";
-import { useSpring } from "@react-spring/core";
+import { useSpring, useTrail } from "@react-spring/core";
 import { animated } from "@react-spring/web";
 
 const Title = styled(animated.h2)`
@@ -26,7 +26,7 @@ const SkillIcons = styled.div`
   justify-content: center;
 `;
 
-const Skill = styled.div`
+const Skill = styled(animated.div)`
   font-size: 4rem;
   padding-left: 8px;
   padding-right: 8px;
@@ -77,10 +77,11 @@ const skillList = [
 
 interface SkillsProps {
   anchorRef: React.RefObject<HTMLHeadingElement>;
+  anchorSize: DOMRectReadOnly | undefined;
   windowSize: DOMRectReadOnly | undefined;
 }
 
-function Skills({ anchorRef, windowSize }: SkillsProps) {
+function Skills({ anchorRef, windowSize, anchorSize }: SkillsProps) {
   const [open, setOpen] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("skills");
 
@@ -90,6 +91,18 @@ function Skills({ anchorRef, windowSize }: SkillsProps) {
     },
     to: {
       transform: "translateX(0px)",
+    },
+  });
+
+  const trail = useTrail(skillList.length, {
+    config: { duration: 80 },
+    from: {
+      opacity: 0,
+      transform: "scale(0.7)",
+    },
+    to: {
+      opacity: open ? 1 : 0,
+      transform: open ? "scale(1)" : "scale(0.7)",
     },
   });
 
@@ -111,6 +124,7 @@ function Skills({ anchorRef, windowSize }: SkillsProps) {
   return (
     <OverlayButton
       anchorRef={anchorRef}
+      anchorSize={anchorSize}
       windowSize={windowSize}
       name="skills"
       offsetX={110}
@@ -120,13 +134,14 @@ function Skills({ anchorRef, windowSize }: SkillsProps) {
       <div>
         <Title style={styles}>{title}</Title>
         <SkillIcons>
-          {skillList.map((skill) => (
+          {trail.map((styles, index) => (
             <Skill
-              key={skill.name}
-              onMouseEnter={(e) => handleMouseEnter(skill.name)}
+              style={styles}
+              key={skillList[index].name}
+              onMouseEnter={(e) => handleMouseEnter(skillList[index].name)}
               onMouseLeave={handleMouseLeave}
             >
-              {skill.icon}
+              {skillList[index].icon}
             </Skill>
           ))}
         </SkillIcons>
