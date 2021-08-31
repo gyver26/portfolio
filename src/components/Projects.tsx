@@ -50,7 +50,9 @@ const Trail = ({ open, children }: TrailProps) => {
   return (
     <Right>
       {trail.map((style, index) => (
-        <animated.div style={style}>{items[index]}</animated.div>
+        <animated.div key={`project-${index}`} style={style}>
+          {items[index]}
+        </animated.div>
       ))}
     </Right>
   );
