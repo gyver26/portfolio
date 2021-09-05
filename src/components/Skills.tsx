@@ -3,6 +3,7 @@ import { OverlayButton } from "components";
 import { Totara, Moodle } from "components/icons";
 import {
   SiElectron,
+  SiFirebase,
   SiMaterialUi,
   SiMysql,
   SiNextDotJs,
@@ -12,66 +13,92 @@ import {
   SiRedux,
 } from "react-icons/si";
 import styled from "styled-components";
-import { useSpring, useTrail } from "@react-spring/core";
-import { animated } from "@react-spring/web";
+import { useSprings } from "@react-spring/core";
+import { animated, config } from "@react-spring/web";
 
-const Title = styled(animated.h2)`
-  text-align: center;
-  margin-bottom: 1.5em;
-`;
-
-const SkillIcons = styled.div`
+const SkillCard = styled(animated.div)`
+  margin: ${(props) => props.theme.spacing(1)};
+  font-size: 2rem;
+  padding: ${(props) => props.theme.spacing(2)};
+  background-color: ${(props) => props.color || props.theme.main};
+  color: #fff;
   display: flex;
-  flex-flow: wrap;
-  justify-content: center;
+  align-items: center;
+  justify-content: space-between;
+  width: 230px;
 `;
 
-const Skill = styled(animated.div)`
-  font-size: 4rem;
-  padding-left: 8px;
-  padding-right: 8px;
+const SkillCards = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 100%;
+
+  @media (min-width: 768px) {
+    max-width: 740px;
+  }
 `;
 
 const skillList = [
   {
+    name: "Skills",
+    icon: null,
+    color: "#01579b",
+  },
+  {
     name: "React",
     icon: <SiReact />,
+    color: "#61dafb",
   },
   {
     name: "Redux",
     icon: <SiRedux />,
+    color: "#764abc",
   },
   {
     name: "Electron",
     icon: <SiElectron />,
+    color: "#61dcf5",
   },
   {
     name: "MaterialUI",
     icon: <SiMaterialUi />,
+    color: "#90caf9",
   },
   {
     name: "Next.js",
     icon: <SiNextDotJs />,
+    color: "#000",
   },
   {
     name: "Node.js",
     icon: <SiNodeDotJs />,
+    color: "#026e00",
   },
   {
     name: "PHP",
     icon: <SiPhp />,
+    color: "#8892BF",
   },
   {
     name: "MySQL",
     icon: <SiMysql />,
+    color: "#4479a1",
   },
   {
     name: "Moodle",
     icon: <Moodle />,
+    color: "#f98012",
   },
   {
     name: "Totara",
     icon: <Totara />,
+    color: "#69BD45",
+  },
+  {
+    name: "Firebase",
+    icon: <SiFirebase />,
+    color: "#FFCA28",
   },
 ];
 
@@ -83,42 +110,25 @@ interface SkillsProps {
 
 function Skills({ anchorRef, windowSize, anchorSize }: SkillsProps) {
   const [open, setOpen] = useState<boolean>(false);
-  const [title, setTitle] = useState<string>("skills");
 
-  const styles = useSpring({
-    from: {
-      transform: "translateX(-15px)",
-    },
-    to: {
-      transform: "translateX(0px)",
-    },
-  });
-
-  const trail = useTrail(skillList.length, {
-    config: { duration: 80 },
-    from: {
-      opacity: 0,
-      transform: "scale(0.7)",
-    },
-    to: {
-      opacity: open ? 1 : 0,
-      transform: open ? "scale(1)" : "scale(0.7)",
-    },
-  });
+  const springs = useSprings(
+    skillList.length,
+    skillList.map((item) => ({
+      config: config.wobbly,
+      delay: 300,
+      from: {
+        opacity: 0,
+        transform: "scale(0.75)",
+      },
+      to: {
+        opacity: open ? 1 : 0,
+        transform: open ? "scale(1)" : "scale(0.75)",
+      },
+    }))
+  );
 
   const handleOverlayClick = () => {
     setOpen((open) => !open);
-  };
-
-  const handleMouseEnter = (newTitle: string) => {
-    const oldTitle = title;
-    if (newTitle !== oldTitle) {
-      setTitle(newTitle);
-    }
-  };
-
-  const handleMouseLeave = () => {
-    setTitle("skills");
   };
 
   return (
@@ -132,19 +142,18 @@ function Skills({ anchorRef, windowSize, anchorSize }: SkillsProps) {
       onClick={handleOverlayClick}
     >
       <div>
-        <Title style={styles}>{title}</Title>
-        <SkillIcons>
-          {trail.map((styles, index) => (
-            <Skill
+        <SkillCards>
+          {springs.map((styles, index) => (
+            <SkillCard
+              color={skillList[index].color}
               style={styles}
               key={skillList[index].name}
-              onMouseEnter={(e) => handleMouseEnter(skillList[index].name)}
-              onMouseLeave={handleMouseLeave}
             >
               {skillList[index].icon}
-            </Skill>
+              {skillList[index].name}
+            </SkillCard>
           ))}
-        </SkillIcons>
+        </SkillCards>
       </div>
     </OverlayButton>
   );
